@@ -34,7 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define DEBOUNCE_TIME 200
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,6 +45,8 @@
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 uint8_t menuOption = 1;
+uint32_t lastButtonPress = 0;
+bool flagOptionSelected = false;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -102,7 +104,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    menuUpdate(menuOption);
+    menuUpdate(menuOption, flagOptionSelected);
 
     /* USER CODE BEGIN 3 */
   }
@@ -191,6 +193,7 @@ static void MX_I2C1_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
   /* USER CODE END MX_GPIO_Init_1 */
@@ -198,13 +201,52 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pins : PB6 PB7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
   /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == GPIO_PIN_6)
+  {
+    if(!flagOptionSelected){
+    uint32_t now = HAL_GetTick();
 
+    if(now - lastButtonPress > DEBOUNCE_TIME)
+    {
+      if(menuOption < 3){
+        menuOption++;
+      }
+      else{
+        menuOption = 1;
+      }
+      lastButtonPress = now;
+    }
+  }
+ }
+  else if(GPIO_Pin == GPIO_PIN_7)
+  {
+    uint32_t now = HAL_GetTick();
+
+    if(now - lastButtonPress > DEBOUNCE_TIME)
+    {
+      flagOptionSelected = !flagOptionSelected;
+      lastButtonPress = now;
+    }
+  }
+}
 /* USER CODE END 4 */
 
 /**

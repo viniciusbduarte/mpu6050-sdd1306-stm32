@@ -5,4 +5,4 @@
 #include <stdbool.h>
 
 
-void menuUpdate(uint8_t option);
+void menuUpdate(uint8_t option, bool flagSelected);

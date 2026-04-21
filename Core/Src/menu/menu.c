@@ -7,7 +7,30 @@ char option2[] = "2. Option 2";
 char option3[] = "3. Option 3";
 bool flagMenu = true;
 
-void menuUpdate(uint8_t option){
+
+static void option1Selected(){
+  ssd1306_Fill(Black);
+  ssd1306_SetCursor(5, 5);
+  retVal = ssd1306_WriteString("Option 1 selected", Font_6x8, White);
+  ssd1306_UpdateScreen();
+}
+
+static void option2Selected(){
+  ssd1306_Fill(Black);
+  ssd1306_SetCursor(5, 5);
+  retVal = ssd1306_WriteString("Option 2 selected", Font_6x8, White);
+  ssd1306_UpdateScreen();
+}
+
+
+static void option3Selected(){
+  ssd1306_Fill(Black);
+  ssd1306_SetCursor(5, 5);
+  retVal = ssd1306_WriteString("Option 3 selected", Font_6x8, White);
+  ssd1306_UpdateScreen();
+}
+
+void menuUpdate(uint8_t option, bool flagSelected){
     ssd1306_Fill(Black);
 
     // Desenho dos retângulos para as opções do menu
@@ -34,12 +57,21 @@ void menuUpdate(uint8_t option){
       {
       case 1:
         ssd1306_DrawRectangle(0, 16, 127, 31, White);      // Option 1
+        if(flagSelected){
+          option1Selected();
+        }
         break;
       case 2:
         ssd1306_DrawRectangle(0, 32, 127, 47, White);     // Option 2
+        if(flagSelected){
+          option2Selected();
+        }
         break;
       case 3:
         ssd1306_DrawRectangle(0, 48, 127, 63, White);     // Option 3
+        if(flagSelected){
+          option3Selected();
+        }
         break;
       
       default:
