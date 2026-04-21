@@ -44,7 +44,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
-
+uint8_t menuOption = 1;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -102,7 +102,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    mostrarMenu();
+    menuUpdate(menuOption);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
