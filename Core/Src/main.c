@@ -44,9 +44,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
-uint8_t menuOption = 1;
 uint32_t lastButtonPress = 0;
-bool flagOptionSelected = false;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -104,7 +102,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    menuUpdate(menuOption, flagOptionSelected);
+    menuUpdate();
 
     /* USER CODE BEGIN 3 */
   }
@@ -221,28 +219,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if(GPIO_Pin == GPIO_PIN_6)
   {
-    if(!flagOptionSelected){
     uint32_t now = HAL_GetTick();
 
     if(now - lastButtonPress > DEBOUNCE_TIME)
     {
-      if(menuOption < 3){
-        menuOption++;
-      }
-      else{
-        menuOption = 1;
-      }
+      pressButtonConfirm();
       lastButtonPress = now;
     }
   }
- }
+ 
   else if(GPIO_Pin == GPIO_PIN_7)
   {
     uint32_t now = HAL_GetTick();
 
     if(now - lastButtonPress > DEBOUNCE_TIME)
     {
-      flagOptionSelected = !flagOptionSelected;
+      pressButtonSelect();
       lastButtonPress = now;
     }
   }

@@ -5,4 +5,6 @@
 #include <stdbool.h>
 
 
-void menuUpdate(uint8_t option, bool flagSelected);
+void pressButtonSelect();
+void pressButtonConfirm();
+void menuUpdate();

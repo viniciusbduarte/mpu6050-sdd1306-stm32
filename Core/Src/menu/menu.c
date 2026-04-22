@@ -6,6 +6,8 @@ char option1[] = "1. Option 1";
 char option2[] = "2. Option 2";
 char option3[] = "3. Option 3";
 bool flagMenu = true;
+bool flagSelected = false;
+uint8_t menuOption = 1;
 
 
 static void option1Selected(){
@@ -30,7 +32,23 @@ static void option3Selected(){
   ssd1306_UpdateScreen();
 }
 
-void menuUpdate(uint8_t option, bool flagSelected){
+void pressButtonSelect(){
+      if(!flagSelected){
+
+      if(menuOption < 3){
+        menuOption++;
+      }
+      else{
+        menuOption = 1;
+      }
+    }
+}
+
+void pressButtonConfirm(){
+    flagSelected = !flagSelected;
+}
+
+void menuUpdate(){
     ssd1306_Fill(Black);
 
     // Desenho dos retângulos para as opções do menu
@@ -53,7 +71,7 @@ void menuUpdate(uint8_t option, bool flagSelected){
     // Desenho do retângulo para destacar a opção selecionada
     if(flagMenu) 
     {
-      switch (option)
+      switch (menuOption)
       {
       case 1:
         ssd1306_DrawRectangle(0, 16, 127, 31, White);      // Option 1
